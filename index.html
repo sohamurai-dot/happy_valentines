@@ -15,6 +15,15 @@
       overflow: hidden;
       background: #ec407a;
     }
+    .confetti {
+      pointer-events: none;
+      user-select: none;
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      z-index: 98;
+      overflow: visible;
+      pointer-events: none;
+    }
     #main-content {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       width: 100vw; height: 100vh;
@@ -63,13 +72,19 @@
       position: absolute; top: 0; left: 0; transition: opacity 0.4s;
       user-select: none; pointer-events: none; background: #000;
     }
-    .slide-quote {
-      position: absolute; left: 50%; top: 50%; z-index: 9;
-      transform: translate(-50%,-50%); min-width: 240px; max-width: 70vw;
-      background: rgba(255,255,255,0.68); padding: 30px 28px; border-radius: 26px;
-      font-size: 1.45em; color: #e91e63; box-shadow: 0 8px 38px 0 #c2185b33;
+    /* Slide and final quote at lower center */
+    .slide-quote, #final-valentine-text {
+      position: absolute; left: 50%; top: 67%; z-index: 9;
+      transform: translate(-50%,-50%);
+      min-width: 240px; max-width: 70vw;
+      background: rgba(255,255,255,0.76);
+      padding: 28px 22px;
+      border-radius: 26px;
+      font-size: 1.37em; color: #e91e63;
+      box-shadow: 0 8px 38px 0 #c2185b33;
       font-weight: 500; text-align: center; line-height: 1.35; text-shadow: 0 2px 8px #fff;
       backdrop-filter: blur(1.5px);
+      border: 1px solid #eab9c4;
     }
     #slide-progress {
       position: absolute;
@@ -114,16 +129,7 @@
       transition: opacity 1s; text-align: center;
       font-size: 2.1em; color: #c11452; font-weight: bold; animation: pop 1.3s infinite alternate;
       letter-spacing: 1.2px; text-shadow: 1px 2px 8px #e91e63;
-      /* Add Valentines background below: */
       background: url('https://i.imgur.com/u9AEnqs.jpeg') center center/cover no-repeat, rgba(255,255,255,0.92);
-      /* Replace ^^ with your own link if desired */
-    }
-    #final-valentine-text {
-      z-index: 3;
-      background: rgba(255,255,255,0.75);
-      padding: 30px 44px;
-      border-radius: 28px;
-      box-shadow: 0 4px 28px #c1145230;
     }
     @keyframes pop {
       0% { transform: scale(1); }
@@ -131,16 +137,17 @@
     }
     @media (max-width: 670px) {
       .greeting { font-size: 1.1em; }
-      .slide-quote { font-size: 1em; max-width: 92vw; }
+      .slide-quote, #final-valentine-text { font-size: 1em; max-width: 90vw; top: 72%; }
       .main-question { font-size: 1.3em; }
       #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
       #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
       .no-option-msg { left: 8px; bottom: 5px; font-size: 0.85em;}
-      #final-valentine-text {padding: 14px 9vw;font-size:1.1em;}
     }
   </style>
 </head>
 <body>
+  <div class="confetti" id="confetti"></div>
+
   <div id="main-content">
     <div class="greeting" id="greeting">Hi Sejal!</div>
     <div class="main-question" id="mainQuestion">Will you be my Valentine?</div>
@@ -157,7 +164,7 @@
   <!-- Final loving message / Valentines Day -->
   <div id="final-msg" class="hidden">
     <div id="final-valentine-text">
-      Happy Valentine's Day, My Love!<br>💖🥰💖
+      Happy Valentine's Day, My Love!<br>💖🥰🌹
     </div>
   </div>
 <script>
@@ -173,7 +180,7 @@
     {
       src: "https://i.imgur.com/m8YOHsp.jpeg",
       quote: "I wish I could hold your hand right now. I miss you 💖"
-    }, 
+    },
     {
       src: "https://i.imgur.com/ddBaTN6.jpeg",
       quote: "When I see you, I see my whole world light up. ✨"
@@ -187,6 +194,8 @@
       quote: "I'll love you through every song, every sunset, every tomorrow."
     }
   ];
+
+  // --- Fun NO button logic etc. ---
   let noClicks = 0;
   const yesBtn = document.getElementById('yesBtn');
   const noBtn = document.getElementById('noBtn');
@@ -199,6 +208,7 @@
   const slideProgress = document.getElementById('slide-progress');
   const finalMsg = document.getElementById('final-msg');
   const backIcon = document.getElementById('backIcon');
+  const finalValentineText = document.getElementById('final-valentine-text');
   let slideIdx = 0;
   let timer = null;
   let videoElement = null, imageElement = null;
@@ -228,6 +238,7 @@
     }
   }
   setNoMsgPos(msgSequence[0].pos);
+
   noBtn.addEventListener('click', function(e) {
     noClicks++;
     if(noClicks <= msgSequence.length-1) {
@@ -258,11 +269,13 @@
       noBtn.style.top = Math.random() * 60 + "%";
     }
   });
+
   yesBtn.addEventListener('click', function(){
-    greeting.style.display = "none"; // hide "Hi Sejal!" after first screen
+    greeting.style.display = "none";
     mainContent.classList.add('hidden');
     startSlideshow();
   });
+
   function clearMedia() {
     if(videoElement) { videoElement.remove(); videoElement = null; }
     if(imageElement) { imageElement.remove(); imageElement = null; }
@@ -323,7 +336,28 @@
     clearInterval(timer);
     timer = setInterval(nextSlide, 4600);
   });
+
+  // ---------- Simple Confetti Hearts & Roses ----------
+  const confetti = document.getElementById('confetti');
+  const emojis = ['💖','🌹','❤️','💘','💗','💞','💕','💝'];
+  function spawnConfetto(){
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const el = document.createElement('span');
+    el.innerText = emoji;
+    el.style.position = 'absolute';
+    el.style.fontSize = (Math.random()*22+28) + 'px';
+    el.style.left = (Math.random()*98)+'vw';
+    el.style.top = '102vh';
+    el.style.opacity = Math.random()*0.7 + 0.3;
+    el.style.transition = 'transform 3.8s linear, opacity 3.8s linear';
+    confetti.appendChild(el);
+    setTimeout(()=>{
+      el.style.transform = `translateY(-105vh) rotate(${Math.random()*360-180}deg)`;
+      el.style.opacity = 0.1;
+    }, 30);
+    setTimeout(()=>{el.remove()}, 4100);
+  }
+  setInterval(spawnConfetto, 320); // controls how often a heart/rose appears
 </script>
 </body>
 </html>
-
