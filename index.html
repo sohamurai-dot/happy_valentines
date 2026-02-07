@@ -57,6 +57,7 @@
       width: 100vw; height: 100vh; object-fit: cover;
       position: absolute; top: 0; left: 0; transition: opacity 0.4s;
       user-select: none; pointer-events: none;
+      background: #000;
     }
     .slide-quote {
       position: absolute; left: 50%; top: 50%; z-index: 9;
@@ -141,30 +142,36 @@
     Happy Valentine's Day, My Love!<br>💖🥰💖
   </div>
 <script>
-  // Add your own images and videos here:
   const slides = [
+    // Example: if your file is a video (mp4), add type: "video"
+    // Make sure your Drive file is set to "Anyone with the link"
     {
-      src: "https://drive.google.com/file/d/173ctZFPpTe9bp3TdZjerMRSfTT-3345u/view?usp=drive_link",
-      quote: "You are my every Valentine, every day ♥"
+      src: "https://drive.google.com/uc?export=download&id=173ctZFPpTe9bp3TdZjerMRSfTT-3345u",
+      quote: "You are my every Valentine, every day ♥",
       type: "video"
     },
+    /*
+    // YouTube direct links do NOT work! Download the video as MP4, upload to Google Drive, and use above syntax.
     {
-      src: "https://youtube.com/shorts/L0SvtBsuXVQ?feature=share",
+      src: "https://www.w3schools.com/html/mov_bbb.mp4",
       quote: "Life with you is a wonderful movie scene 🎬",
       type: "video"
     },
+    */
     {
-      src: "https://drive.google.com/file/d/1t29BIx1mZCfrSuDXa9RTn7o6GQZgbkYR/view?usp=drive_link",
+      src: "https://drive.google.com/uc?export=download&id=1t29BIx1mZCfrSuDXa9RTn7o6GQZgbkYR",
       quote: "You make my heart smile every single day."
+      // Add ,type: "video" if this file is a video!
     },
     {
-      src: "https://drive.google.com/file/d/1RM6A-HZiVWBnHilMuINcTj56FBg2TkTi/view?usp=drive_link",
+      src: "https://drive.google.com/uc?export=download&id=1RM6A-HZiVWBnHilMuINcTj56FBg2TkTi",
       quote: "Forever grateful for us. 🌸"
+      // Add ,type: "video" if this file is a video!
     },
     {
-      src: "https://drive.google.com/file/d/1Z1AElDzBCG1D4yUsRyfQK9xxlGCJbRDA/view?usp=drive_link",
-      quote: "I'll love you through every song, every sunset, every tomorrow.",
-      //type: "video"
+      src: "https://drive.google.com/uc?export=download&id=1Z1AElDzBCG1D4yUsRyfQK9xxlGCJbRDA",
+      quote: "I'll love you through every song, every sunset, every tomorrow."
+      // Add ,type: "video" if this file is a video!
     }
   ];
   // === Logic for tricky No button with animated no-option messages ===
@@ -182,15 +189,12 @@
   let slideIdx = 0;
   let timer = null;
   let videoElement = null, imageElement = null;
-
-  // Each step for the no-option message - corners & msg
   const msgSequence = [
     {text: "No isn't an option, you can try. 😉", pos: "bl"},   // bottom left
     {text: "I said no isn't an option! 😏", pos: "br"},         // bottom right
     {text: "Stop clicking no!", pos: "tr"},                    // top right
-    {text: "You really won't give up? 😂", pos: "tl"},          // top left
+    {text: "You really won't give up? 😂", pos: "tl"}           // top left
   ];
-  // For more than 4 clicks, pick random corner/msg combos
   const otherMsgs = [
     "Please?? 🥺",
     "You're not getting away! 😝",
@@ -200,42 +204,31 @@
     "Pretty pleeeease 💖",
     "No escaping! 😁"
   ];
-  // Helper: apply msg pos
   function setNoMsgPos(posTag) {
     noMsg.style.left = ""; noMsg.style.right = "";
     noMsg.style.top = ""; noMsg.style.bottom = "";
     switch(posTag) {
-      case "bl": // bottom left
-        noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
-      case "br": // bottom right
-        noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
-      case "tr": // top right
-        noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
-      case "tl": // top left
-        noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
+      case "bl": noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
+      case "br": noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
+      case "tr": noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
+      case "tl": noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
     }
   }
-  // Initial pos/msg
   setNoMsgPos(msgSequence[0].pos);
-
   noBtn.addEventListener('click', function(e) {
     noClicks++;
-    // Move and rewrite msg
     if(noClicks <= msgSequence.length-1) {
       noMsg.innerText = msgSequence[noClicks].text;
       setNoMsgPos(msgSequence[noClicks].pos);
     } else {
-      // Randomly pick a corner and msg
       let corners = ["bl","br","tr","tl"];
       let rmsg = otherMsgs[Math.floor(Math.random()*otherMsgs.length)];
       let rc = corners[Math.floor(Math.random()*corners.length)];
       noMsg.innerText = rmsg;
       setNoMsgPos(rc);
     }
-    // Animate Yes button size for fun
     let yesScale = 1.4 + Math.min(0.4 + noClicks*0.22, 2);
     yesBtn.style.fontSize = yesScale+"em";
-    // Animate main question also, optionally
     if(noClicks===1){
       mainQuestion.innerText = "Are you sure? 😅";
       noBtn.innerText = "No 😓";
@@ -246,24 +239,20 @@
       mainQuestion.innerText = "I will always love you 💖";
       noBtn.innerText = "No 😢";
     }
-    // After a few clicks, make No button jump randomly
     if(noClicks>=4) {
       noBtn.style.position = "absolute";
       noBtn.style.left = Math.random() * 60 + "%";
       noBtn.style.top = Math.random() * 60 + "%";
     }
   });
-
   yesBtn.addEventListener('click', function(){
     mainContent.classList.add('hidden');
     startSlideshow();
   });
-
   function clearMedia() {
     if(videoElement) { videoElement.remove(); videoElement = null; }
     if(imageElement) { imageElement.remove(); imageElement = null; }
   }
-
   function showSlide(idx) {
     clearMedia();
     const slide = slides[idx];
@@ -286,7 +275,6 @@
     slideProgress.innerText = `Slide ${idx+1} of ${slides.length}`;
     backIcon.setAttribute("aria-disabled", idx === 0 ? "true" : "false");
   }
-
   function startSlideshow() {
     slideshow.classList.remove('hidden');
     finalMsg.classList.add('hidden');
@@ -294,7 +282,6 @@
     showSlide(slideIdx);
     timer = setInterval(nextSlide, 4600);
   }
-
   function nextSlide() {
     if (slideIdx < slides.length - 1) {
       slideIdx++;
@@ -303,24 +290,19 @@
       endSlideshow();
     }
   }
-
   function endSlideshow() {
     clearInterval(timer);
     slideshow.classList.add('hidden');
     finalMsg.classList.remove('hidden');
   }
-
-  // Back arrow click (icon at top left)
   backIcon.addEventListener('click', function (e) {
     if (slideIdx > 0) {
       slideIdx--;
       showSlide(slideIdx);
-      clearInterval(timer); // reset slideshow timer
+      clearInterval(timer);
       timer = setInterval(nextSlide, 4600);
     }
   });
-
-  // (Optional) Tap/click anywhere else to advance slideshow
   slideshow.addEventListener('click', function (evt) {
     if (evt.target === backIcon) return;
     nextSlide();
@@ -330,5 +312,3 @@
 </script>
 </body>
 </html>
-
-
