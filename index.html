@@ -5,11 +5,15 @@
   <title>Hi Sejal! Will You Be My Valentine?</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box; }
+    html, body {
+      height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box;
+    }
     body {
-      min-height: 100vh; width: 100vw; position: relative;
+      min-height: 100vh; width: 100vw;
+      position: relative;
       font-family: 'Segoe UI', cursive, sans-serif;
-      overflow: hidden; background: #ec407a;
+      overflow: hidden;
+      background: #ec407a;
     }
     .confetti {
       pointer-events: none; user-select: none;
@@ -18,8 +22,8 @@
     }
     #main-content {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      width: 100vw; height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
       background: linear-gradient(135deg,#ffd1e8 0,#fff6fa 100%);
       z-index: 1;
     }
@@ -60,10 +64,12 @@
       position: absolute; left: 50%; top: 67%; z-index: 9;
       transform: translate(-50%,-50%);
       min-width: 240px; max-width: 70vw;
-      background: rgba(255,255,255,0.76); padding: 28px 22px;
-      border-radius: 26px; font-size: 1.37em; color: #e91e63;
-      box-shadow: 0 8px 38px 0 #c2185b33; font-weight: 500;
-      text-align: center; line-height: 1.35; text-shadow: 0 2px 8px #fff;
+      background: rgba(255,255,255,0.76);
+      padding: 28px 22px;
+      border-radius: 26px;
+      font-size: 1.37em; color: #e91e63;
+      box-shadow: 0 8px 38px 0 #c2185b33;
+      font-weight: 500; text-align: center; line-height: 1.35; text-shadow: 0 2px 8px #fff;
       backdrop-filter: blur(1.5px); border: 1px solid #eab9c4;
     }
     #slide-progress {
@@ -87,19 +93,36 @@
       transition: opacity 1s; text-align: center;
       font-size: 2.1em; color: #c11452; font-weight: bold; animation: pop 1.3s infinite alternate;
       letter-spacing: 1.2px; text-shadow: 1px 2px 8px #e91e63;
-      background: url('https://i.imgur.com/7TwanUr.jpeg') center center/cover no-repeat, rgba(255,255,255,0.92);
+      background: url('https://i.imgur.com/u9AEnqs.jpeg') center center/cover no-repeat, rgba(255,255,255,0.92);
     }
+    /* Audio pause/play button */
+    #audio-controls {
+      position: fixed; right: 22px; bottom: 22px; z-index: 999;
+      background: rgba(255,255,255,0.85); border-radius: 50px;
+      box-shadow: 0 1px 10px 1px #c1145244;
+      display: flex; align-items: center;
+      padding: 2px 8px 2px 2px;
+    }
+    #audioplaybtn {
+      font-size: 2em; color: #e91e63; background: none; border: none; cursor: pointer;
+      border-radius: 50px; outline: none; margin: 0 2px; padding: 4px 18px 4px 12px;
+      min-width: 42px;
+      transition: background 0.15s;
+    }
+    #audioplaybtn:active { background: #ffd1e85e; }
     @keyframes pop {
       0% { transform: scale(1); }
       100% { transform: scale(1.05);}
     }
-    @media (max-width: 670px) {
+    @media (max-width:670px) {
       .greeting { font-size: 1.1em; }
-      .slide-quote, #final-valentine-text { font-size: 1em; max-width: 90vw; top: 72%; }
-      .main-question { font-size: 1.3em; }
-      #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
-      #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
-      .no-option-msg { left: 8px; bottom: 5px; font-size: 0.85em;}
+      .slide-quote,#final-valentine-text{ font-size:1em; max-width:90vw; top:72%;}
+      .main-question{ font-size:1.3em;}
+      #slideshow, #final-msg, .slide-media, .slide-video{max-width:100vw; max-height:100vh;}
+      #backIcon{top:12px; left:7px; font-size:1.5em; width:37px;height:37px;}
+      .no-option-msg{left:8px;bottom:5px;font-size:0.85em;}
+      #audio-controls{right:5px;bottom:5px; padding:2px 2vw;}
+      #audioplaybtn{font-size:1.5em;min-width:30px;padding:4px 8px 4px 5px;}
     }
   </style>
 </head>
@@ -122,8 +145,12 @@
       Happy Valentine's Day, My Love!<br>💖🥰🌹
     </div>
   </div>
-  <!-- Add Vocaroo audio -->
+  <!-- Audio that starts only with first Yes or No click -->
   <audio id="bgmusic" src="https://media.vocaroo.com/mp3/1lQsj9pHMXIj" loop></audio>
+  <!-- AUDIO CONTROLS -->
+  <div id="audio-controls">
+    <button id="audioplaybtn" title="Play/Pause Music">⏸️</button>
+  </div>
 <script>
   // Confetti
   const confetti = document.getElementById('confetti');
@@ -187,6 +214,7 @@
   const finalMsg = document.getElementById('final-msg');
   const backIcon = document.getElementById('backIcon');
   const bgmusic = document.getElementById('bgmusic');
+  const audioplaybtn = document.getElementById('audioplaybtn');
   let slideIdx = 0;
   let timer = null;
   let videoElement = null, imageElement = null;
@@ -205,19 +233,29 @@
     "Pretty pleeeease 💖",
     "No escaping! 😁"
   ];
-  function setNoMsgPos(posTag) {
-    noMsg.style.left = ""; noMsg.style.right = "";
-    noMsg.style.top = ""; noMsg.style.bottom = "";
-    switch(posTag) {
-      case "bl": noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
-      case "br": noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
-      case "tr": noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
-      case "tl": noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
-    }
+
+  // --- AUDIO CONTROLS --- //
+  function updateAudioBtn(){
+    audioplaybtn.innerText = bgmusic.paused ? "▶️" : "⏸️";
   }
-  setNoMsgPos(msgSequence[0].pos);
+  audioplaybtn.addEventListener('click', function(){
+    if(bgmusic.paused){ bgmusic.play(); } else { bgmusic.pause(); }
+    updateAudioBtn();
+  });
+  bgmusic.addEventListener('play', updateAudioBtn);
+  bgmusic.addEventListener('pause', updateAudioBtn);
+  updateAudioBtn();
+
+  function playMusic() {
+    if(bgmusic.paused){
+      bgmusic.volume = 0.6;
+      bgmusic.play().catch(() => {});
+    }
+    updateAudioBtn();
+  }
 
   noBtn.addEventListener('click', function(e) {
+    playMusic();
     noClicks++;
     if(noClicks <= msgSequence.length-1) {
       noMsg.innerText = msgSequence[noClicks].text;
@@ -249,10 +287,23 @@
   });
 
   yesBtn.addEventListener('click', function(){
+    playMusic();
     greeting.style.display = "none";
     mainContent.classList.add('hidden');
     startSlideshow();
   });
+
+  function setNoMsgPos(posTag) {
+    noMsg.style.left = ""; noMsg.style.right = "";
+    noMsg.style.top = ""; noMsg.style.bottom = "";
+    switch(posTag) {
+      case "bl": noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
+      case "br": noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
+      case "tr": noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
+      case "tl": noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
+    }
+  }
+  setNoMsgPos(msgSequence[0].pos);
 
   function clearMedia() {
     if(videoElement) { videoElement.remove(); videoElement = null; }
@@ -314,17 +365,6 @@
     clearInterval(timer);
     timer = setInterval(nextSlide, 4600);
   });
-
-  // Play audio after 1 second from page load
-  setTimeout(function() {
-    const bgmusic = document.getElementById("bgmusic");
-    // Safari/iOS may require user interact, but try to play
-    if(bgmusic && bgmusic.paused) {
-      bgmusic.volume = 0.6;
-      bgmusic.play().catch(()=>{});
-    }
-  }, 1000);
 </script>
 </body>
 </html>
-
