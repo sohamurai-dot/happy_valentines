@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Will You Be My Valentine?</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    html, body {
+      height: 100%; margin: 0; padding: 0;
+      width: 100vw; box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      width: 100vw;
+      position: relative;
+      font-family: 'Segoe UI', cursive, sans-serif;
+      overflow: hidden;
+      background: #ec407a;
+    }
+    #main-content {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg,#ffd1e8 0,#fff6fa 100%);
+      z-index: 1;
+    }
+    .main-question {
+      font-size: 2.2em;
+      margin-bottom: 40px;
+      color: #c2185b;
+      font-weight: bold;
+      letter-spacing: 1.2px;
+      text-shadow: 1px 1px 8px #fff8;
+    }
+    .btn {
+      font-size: 1.3em;
+      padding: 16px 36px;
+      margin: 20px 16px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: #ff4081;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 4px 12px #f0629222;
+      transition: all 0.2s;
+    }
+    #noBtn {
+      background: #fff;
+      color: #ff4081;
+      border: 2px solid #ff4081;
+    }
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- SLIDESHOW --- */
+    #slideshow {
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .slide-media, .slide-video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      top: 0; left: 0;
+      transition: opacity 0.4s;
+      user-select: none;
+      pointer-events: none;
+    }
+    .slide-quote {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 9;
+      transform: translate(-50%,-50%);
+      min-width: 240px;
+      max-width: 70vw;
+      background: rgba(255,255,255,0.68);
+      padding: 30px 28px;
+      border-radius: 26px;
+      font-size: 1.45em;
+      color: #e91e63;
+      box-shadow: 0 8px 38px 0 #c2185b33;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.35;
+      text-shadow: 0 2px 8px #fff;
+      backdrop-filter: blur(1.5px);
+    }
+    #slide-progress {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 1.1em;
+      letter-spacing: 1px;
+      padding: 6px 16px;
+      background: rgba(233,30,99,0.24);
+      border-radius: 16px;
+      user-select: none;
+      font-weight: 500;
+      text-shadow: 0 1px 2px #e91e63;
+    }
+
+    #final-msg {
+      position: absolute;
+      z-index: 20;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(255,255,255,0.92);
+      transition: opacity 1s;
+      text-align: center;
+      font-size: 2.1em;
+      color: #c11452;
+      font-weight: bold;
+      animation: pop 1.3s infinite alternate;
+      letter-spacing: 1.2px;
+      text-shadow: 1px 2px 8px #e91e63;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05);}
+    }
+    @media (max-width: 670px) {
+      .slide-quote { font-size: 1em; max-width: 92vw; }
+      .main-question { font-size: 1.3em; }
+      #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
+    }
+  </style>
+</head>
+<body>
+  <div id="main-content">
+    <div class="main-question" id="mainQuestion">Will you be my Valentine?</div>
+    <button class="btn" id="yesBtn">Yes</button>
+    <button class="btn" id="noBtn">No</button>
+  </div>
+  <!-- SlideShow overlay -->
+  <div id="slideshow" class="hidden">
+    <div id="slide-quote" class="slide-quote"></div>
+    <span id="slide-progress"></span>
+  </div>
+  <!-- Final loving message -->
+  <div id="final-msg" class="hidden">
+    Happy Valentine's Day, My Love!<br>💖🥰💖
+  </div>
+
+<script>
+  // 1. Put YOUR OWN pictures/videos and quotes here:
+  // For videos: type: "video"
+  // For images: type: "image" or omit
+
+  
+
+  // Sample (change to yours!)
+  const slides = [
+    {
+      src: "YOUR_IMAGE_1_URL.jpg",
+      quote: "You are my every Valentine, my every day ♥",
+      type: "image"
+    },
+    {
+      src: "YOUR_VIDEO_1_URL.mp4",
+      quote: "Life with you is a wonderful movie scene 🎬",
+      type: "video"
+    },
+    {
+      src: "YOUR_IMAGE_2_URL.jpg",
+      quote: "You make my heart smile every single day.",
+      type: "image"
+    },
+    {
+      src: "YOUR_IMAGE_3_URL.jpg",
+      quote: "Forever grateful for us. 🌸",
+      type: "image"
+    },
+    {
+      src: "YOUR_VIDEO_2_URL.mp4",
+      quote: "I'll love you through every song, every sunset, every tomorrow.",
+      type: "video"
+    }
+  ];
+
+  // ========== LOGIC ==========
+
+  let noClicks = 0;
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const mainQuestion = document.getElementById('mainQuestion');
+  const mainContent = document.getElementById('main-content');
+  const slideshow = document.getElementById('slideshow');
+  const slideQuote = document.getElementById('slide-quote');
+  const slideProgress = document.getElementById('slide-progress');
+  const finalMsg = document.getElementById('final-msg');
+
+  noBtn.addEventListener('click', function(e) {
+    noClicks++;
+    if(noClicks === 1){
+      mainQuestion.innerText = "Are you sure?";
+      noBtn.innerText = "No 😓";
+      yesBtn.style.fontSize = "1.5em";
+    } else if (noClicks === 2){
+      mainQuestion.innerText = "Please, be my Valentine!";
+      noBtn.innerText = "No 😭";
+      yesBtn.style.fontSize = "1.7em";
+    } else if(noClicks === 3){
+      mainQuestion.innerText = "I will always love you 💖";
+      noBtn.innerText = "No 😢";
+      yesBtn.style.fontSize = "2em";
+      yesBtn.style.background = "#e91e63";
+    } else {
+      // Move No button randomly
+      noBtn.style.position = "absolute";
+      noBtn.style.left = Math.random() * 60 + "%";
+      noBtn.style.top = Math.random() * 60 + "%";
+      mainQuestion.innerText = "Come on, pretty please?";
+      yesBtn.style.fontSize = (2.3 + 0.2*noClicks) + "em";
+    }
+  });
+
+  yesBtn.addEventListener('click', function(){
+    mainContent.classList.add('hidden');
+    startSlideshow();
+  });
+
+  // Slideshow vars
+  let slideIdx = 0, timer = null;
+  let videoElement = null, imageElement = null;
+
+  function clearMedia() {
+    if(videoElement) { videoElement.remove(); videoElement = null; }
+    if(imageElement) { imageElement.remove(); imageElement = null; }
+  }
+
+  function showSlide(idx) {
+    clearMedia();
+    const slide = slides[idx];
+
+    if(slide.type === "video" || slide.src.match(/\.(mp4|webm|ogg)$/i)) {
+      videoElement = document.createElement('video');
+      videoElement.src = slide.src;
+      videoElement.className = 'slide-video';
+      videoElement.autoplay = true;
+      videoElement.muted = true;
+      videoElement.loop = true;
+      videoElement.playsInline = true;
+      slideshow.appendChild(videoElement);
+    } else {
+      imageElement = document.createElement('img');
+      imageElement.src = slide.src;
+      imageElement.className = 'slide-media';
+      slideshow.appendChild(imageElement);
+    }
+    // Set quote and counter
+    slideQuote.innerHTML = slide.quote;
+    slideProgress.innerText = `Slide ${idx+1} of ${slides.length}`;
+  }
+
+
+  function startSlideshow() {
+    slideshow.classList.remove('hidden');
+    slideIdx = 0;
+    showSlide(slideIdx);
+    timer = setInterval(nextSlide, 4600); // 4.6s per slide
+  }
+
+  function nextSlide() {
+    slideIdx++;
+    if(slideIdx >= slides.length) {
+      endSlideshow();
+    } else {
+      showSlide(slideIdx);
+    }
+  }
+  function endSlideshow() {
+    clearInterval(timer);
+    slideshow.classList.add('hidden');
+    finalMsg.classList.remove('hidden');
+  }
+
+  // (Optional: allow tap/click to skip ahead on mobile)
+  slideshow.addEventListener('click', function () {
+    if (timer) {
+      clearInterval(timer);
+      nextSlide();
+      if(slideIdx < slides.length) timer = setInterval(nextSlide, 4600);
+    }
+  });
+
+</script>
+</body>
+</html>
