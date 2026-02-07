@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Will You Be My Valentine?</title>
+  <title>Hi Sejal! Will You Be My Valentine?</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     html, body { height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box; }
@@ -23,14 +23,30 @@
       color: #c2185b; font-weight: bold; letter-spacing: 1.2px;
       text-shadow: 1px 1px 8px #fff8;
     }
+    .no-option-msg {
+      position: absolute;
+      font-size: 1em;
+      color: #9a1355;
+      opacity: 0.78;
+      font-style: italic;
+      letter-spacing: 0.08em;
+      pointer-events: none;
+      z-index: 9;
+      user-select: none;
+      max-width: 210px;
+      background: none;
+      padding: 5px 7px;
+      transition: left 0.5s, right 0.5s, bottom 0.5s, top 0.5s, opacity 0.3s;
+    }
     .btn {
-      font-size: 1.3em; padding: 16px 36px; margin: 20px 16px;
+      font-size: 1.38em; padding: 16px 36px; margin: 20px 16px;
       border: none; border-radius: 30px; cursor: pointer;
       background: #ff4081; color: #fff; font-weight: bold;
       box-shadow: 0 4px 12px #f0629222; transition: all 0.2s;
     }
     #noBtn {
       background: #fff; color: #ff4081; border: 2px solid #ff4081;
+      position: relative;
     }
     .hidden { display: none !important; }
     #slideshow {
@@ -103,6 +119,7 @@
       .main-question { font-size: 1.3em; }
       #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
       #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
+      .no-option-msg { left: 8px; bottom: 5px; font-size: 0.85em;}
     }
   </style>
 </head>
@@ -111,6 +128,7 @@
     <div class="main-question" id="mainQuestion">Will you be my Valentine?</div>
     <button class="btn" id="yesBtn">Yes</button>
     <button class="btn" id="noBtn">No</button>
+    <div class="no-option-msg" id="noMsg">No isn't an option, you can try. 😉</div>
   </div>
   <!-- SlideShow overlay -->
   <div id="slideshow" class="hidden">
@@ -127,8 +145,7 @@
   const slides = [
     {
       src: "https://i.imgur.com/zVqPZg6.jpg",
-      quote: "You are my every Valentine, every day ♥",
-      type: "image"
+      quote: "You are my every Valentine, every day ♥"
     },
     {
       src: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -137,13 +154,11 @@
     },
     {
       src: "https://i.imgur.com/Zz6b8XC.jpg",
-      quote: "You make my heart smile every single day.",
-      type: "image"
+      quote: "You make my heart smile every single day."
     },
     {
       src: "https://i.imgur.com/dt8AUb6.jpg",
-      quote: "Forever grateful for us. 🌸",
-      type: "image"
+      quote: "Forever grateful for us. 🌸"
     },
     {
       src: "https://www.w3schools.com/html/movie.mp4",
@@ -151,11 +166,13 @@
       type: "video"
     }
   ];
+  // === Logic for tricky No button with animated no-option messages ===
   let noClicks = 0;
   const yesBtn = document.getElementById('yesBtn');
   const noBtn = document.getElementById('noBtn');
   const mainQuestion = document.getElementById('mainQuestion');
   const mainContent = document.getElementById('main-content');
+  const noMsg = document.getElementById('noMsg');
   const slideshow = document.getElementById('slideshow');
   const slideQuote = document.getElementById('slide-quote');
   const slideProgress = document.getElementById('slide-progress');
@@ -165,28 +182,74 @@
   let timer = null;
   let videoElement = null, imageElement = null;
 
+  // Each step for the no-option message - corners & msg
+  const msgSequence = [
+    {text: "No isn't an option, you can try. 😉", pos: "bl"},   // bottom left
+    {text: "I said no isn't an option! 😏", pos: "br"},         // bottom right
+    {text: "Stop clicking no!", pos: "tr"},                    // top right
+    {text: "You really won't give up? 😂", pos: "tl"},          // top left
+  ];
+  // For more than 4 clicks, pick random corner/msg combos
+  const otherMsgs = [
+    "Please?? 🥺",
+    "You're not getting away! 😝",
+    "You're too cute to say no!",
+    "Still no? 😅",
+    "Say yes! 😘",
+    "Pretty pleeeease 💖",
+    "No escaping! 😁"
+  ];
+  // Helper: apply msg pos
+  function setNoMsgPos(posTag) {
+    noMsg.style.left = ""; noMsg.style.right = "";
+    noMsg.style.top = ""; noMsg.style.bottom = "";
+    switch(posTag) {
+      case "bl": // bottom left
+        noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
+      case "br": // bottom right
+        noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
+      case "tr": // top right
+        noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
+      case "tl": // top left
+        noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
+    }
+  }
+  // Initial pos/msg
+  setNoMsgPos(msgSequence[0].pos);
+
   noBtn.addEventListener('click', function(e) {
     noClicks++;
-    if(noClicks === 1){
-      mainQuestion.innerText = "Are you sure?";
+    // Move and rewrite msg
+    if(noClicks <= msgSequence.length-1) {
+      noMsg.innerText = msgSequence[noClicks].text;
+      setNoMsgPos(msgSequence[noClicks].pos);
+    } else {
+      // Randomly pick a corner and msg
+      let corners = ["bl","br","tr","tl"];
+      let rmsg = otherMsgs[Math.floor(Math.random()*otherMsgs.length)];
+      let rc = corners[Math.floor(Math.random()*corners.length)];
+      noMsg.innerText = rmsg;
+      setNoMsgPos(rc);
+    }
+    // Animate Yes button size for fun
+    let yesScale = 1.4 + Math.min(0.4 + noClicks*0.22, 2);
+    yesBtn.style.fontSize = yesScale+"em";
+    // Animate main question also, optionally
+    if(noClicks===1){
+      mainQuestion.innerText = "Are you sure? 😅";
       noBtn.innerText = "No 😓";
-      yesBtn.style.fontSize = "1.5em";
-    } else if (noClicks === 2){
+    } else if (noClicks===2) {
       mainQuestion.innerText = "Please, be my Valentine!";
       noBtn.innerText = "No 😭";
-      yesBtn.style.fontSize = "1.7em";
-    } else if(noClicks === 3){
+    } else if (noClicks===3) {
       mainQuestion.innerText = "I will always love you 💖";
       noBtn.innerText = "No 😢";
-      yesBtn.style.fontSize = "2em";
-      yesBtn.style.background = "#e91e63";
-    } else {
-      // Move No button randomly
+    }
+    // After a few clicks, make No button jump randomly
+    if(noClicks>=4) {
       noBtn.style.position = "absolute";
       noBtn.style.left = Math.random() * 60 + "%";
       noBtn.style.top = Math.random() * 60 + "%";
-      mainQuestion.innerText = "Come on, pretty please?";
-      yesBtn.style.fontSize = (2.3 + 0.2*noClicks) + "em";
     }
   });
 
@@ -203,7 +266,7 @@
   function showSlide(idx) {
     clearMedia();
     const slide = slides[idx];
-    if(slide.type === "video" || slide.src.match(/\.(mp4|webm|ogg)$/i)) {
+    if(slide.type === "video" || (slide.src && slide.src.match(/\.(mp4|webm|ogg)$/i))) {
       videoElement = document.createElement('video');
       videoElement.src = slide.src;
       videoElement.className = 'slide-video';
