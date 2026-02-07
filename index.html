@@ -5,95 +5,49 @@
   <title>Will You Be My Valentine?</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    html, body {
-      height: 100%; margin: 0; padding: 0;
-      width: 100vw; box-sizing: border-box;
-    }
+    html, body { height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box; }
     body {
-      min-height: 100vh;
-      width: 100vw;
-      position: relative;
+      min-height: 100vh; width: 100vw; position: relative;
       font-family: 'Segoe UI', cursive, sans-serif;
-      overflow: hidden;
-      background: #ec407a;
+      overflow: hidden; background: #ec407a;
     }
     #main-content {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
       background: linear-gradient(135deg,#ffd1e8 0,#fff6fa 100%);
       z-index: 1;
     }
     .main-question {
-      font-size: 2.2em;
-      margin-bottom: 40px;
-      color: #c2185b;
-      font-weight: bold;
-      letter-spacing: 1.2px;
+      font-size: 2.2em; margin-bottom: 40px;
+      color: #c2185b; font-weight: bold; letter-spacing: 1.2px;
       text-shadow: 1px 1px 8px #fff8;
     }
     .btn {
-      font-size: 1.3em;
-      padding: 16px 36px;
-      margin: 20px 16px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      background: #ff4081;
-      color: #fff;
-      font-weight: bold;
-      box-shadow: 0 4px 12px #f0629222;
-      transition: all 0.2s;
+      font-size: 1.3em; padding: 16px 36px; margin: 20px 16px;
+      border: none; border-radius: 30px; cursor: pointer;
+      background: #ff4081; color: #fff; font-weight: bold;
+      box-shadow: 0 4px 12px #f0629222; transition: all 0.2s;
     }
     #noBtn {
-      background: #fff;
-      color: #ff4081;
-      border: 2px solid #ff4081;
+      background: #fff; color: #ff4081; border: 2px solid #ff4081;
     }
-    .hidden {
-      display: none !important;
-    }
-
-    /* --- SLIDESHOW --- */
+    .hidden { display: none !important; }
     #slideshow {
-      position: absolute;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 2;
-      overflow: hidden;
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 2; overflow: hidden;
     }
     .slide-media, .slide-video {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      position: absolute;
-      top: 0; left: 0;
-      transition: opacity 0.4s;
-      user-select: none;
-      pointer-events: none;
+      width: 100vw; height: 100vh; object-fit: cover;
+      position: absolute; top: 0; left: 0; transition: opacity 0.4s;
+      user-select: none; pointer-events: none;
     }
     .slide-quote {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      z-index: 9;
-      transform: translate(-50%,-50%);
-      min-width: 240px;
-      max-width: 70vw;
-      background: rgba(255,255,255,0.68);
-      padding: 30px 28px;
-      border-radius: 26px;
-      font-size: 1.45em;
-      color: #e91e63;
-      box-shadow: 0 8px 38px 0 #c2185b33;
-      font-weight: 500;
-      text-align: center;
-      line-height: 1.35;
-      text-shadow: 0 2px 8px #fff;
+      position: absolute; left: 50%; top: 50%; z-index: 9;
+      transform: translate(-50%,-50%); min-width: 240px; max-width: 70vw;
+      background: rgba(255,255,255,0.68); padding: 30px 28px; border-radius: 26px;
+      font-size: 1.45em; color: #e91e63; box-shadow: 0 8px 38px 0 #c2185b33;
+      font-weight: 500; text-align: center; line-height: 1.35; text-shadow: 0 2px 8px #fff;
       backdrop-filter: blur(1.5px);
     }
     #slide-progress {
@@ -110,25 +64,35 @@
       user-select: none;
       font-weight: 500;
       text-shadow: 0 1px 2px #e91e63;
+      pointer-events: none;
     }
-
-    #final-msg {
+    #backIcon {
       position: absolute;
+      top: 28px;
+      left: 28px;
       z-index: 20;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(255,255,255,0.92);
-      transition: opacity 1s;
-      text-align: center;
-      font-size: 2.1em;
-      color: #c11452;
+      font-size: 2.2em;
       font-weight: bold;
-      animation: pop 1.3s infinite alternate;
-      letter-spacing: 1.2px;
-      text-shadow: 1px 2px 8px #e91e63;
+      color: #fff;
+      background: rgba(233,30,99,0.33);
+      border-radius: 50%;
+      width: 45px; height: 45px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 12px #e91e63aa;
+      transition: background 0.14s, color 0.14s;
+      user-select: none;
+    }
+    #backIcon[aria-disabled="true"] {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+    #final-msg {
+      position: absolute; z-index: 20; left: 0; top: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      background: rgba(255,255,255,0.92); transition: opacity 1s; text-align: center;
+      font-size: 2.1em; color: #c11452; font-weight: bold; animation: pop 1.3s infinite alternate;
+      letter-spacing: 1.2px; text-shadow: 1px 2px 8px #e91e63;
     }
     @keyframes pop {
       0% { transform: scale(1); }
@@ -138,6 +102,7 @@
       .slide-quote { font-size: 1em; max-width: 92vw; }
       .main-question { font-size: 1.3em; }
       #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
+      #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
     }
   </style>
 </head>
@@ -149,6 +114,7 @@
   </div>
   <!-- SlideShow overlay -->
   <div id="slideshow" class="hidden">
+    <div id="backIcon" title="Back" aria-disabled="true">&lt;</div>
     <div id="slide-quote" class="slide-quote"></div>
     <span id="slide-progress"></span>
   </div>
@@ -156,45 +122,35 @@
   <div id="final-msg" class="hidden">
     Happy Valentine's Day, My Love!<br>💖🥰💖
   </div>
-
 <script>
-  // 1. Put YOUR OWN pictures/videos and quotes here:
-  // For videos: type: "video"
-  // For images: type: "image" or omit
-
-  
-
-  // Sample (change to yours!)
+  // Add your own images and videos here:
   const slides = [
     {
-      src: "YOUR_IMAGE_1_URL.jpg",
-      quote: "You are my every Valentine, my every day ♥",
+      src: "https://i.imgur.com/zVqPZg6.jpg",
+      quote: "You are my every Valentine, every day ♥",
       type: "image"
     },
     {
-      src: "YOUR_VIDEO_1_URL.mp4",
+      src: "https://www.w3schools.com/html/mov_bbb.mp4",
       quote: "Life with you is a wonderful movie scene 🎬",
       type: "video"
     },
     {
-      src: "YOUR_IMAGE_2_URL.jpg",
+      src: "https://i.imgur.com/Zz6b8XC.jpg",
       quote: "You make my heart smile every single day.",
       type: "image"
     },
     {
-      src: "YOUR_IMAGE_3_URL.jpg",
+      src: "https://i.imgur.com/dt8AUb6.jpg",
       quote: "Forever grateful for us. 🌸",
       type: "image"
     },
     {
-      src: "YOUR_VIDEO_2_URL.mp4",
+      src: "https://www.w3schools.com/html/movie.mp4",
       quote: "I'll love you through every song, every sunset, every tomorrow.",
       type: "video"
     }
   ];
-
-  // ========== LOGIC ==========
-
   let noClicks = 0;
   const yesBtn = document.getElementById('yesBtn');
   const noBtn = document.getElementById('noBtn');
@@ -204,6 +160,10 @@
   const slideQuote = document.getElementById('slide-quote');
   const slideProgress = document.getElementById('slide-progress');
   const finalMsg = document.getElementById('final-msg');
+  const backIcon = document.getElementById('backIcon');
+  let slideIdx = 0;
+  let timer = null;
+  let videoElement = null, imageElement = null;
 
   noBtn.addEventListener('click', function(e) {
     noClicks++;
@@ -235,10 +195,6 @@
     startSlideshow();
   });
 
-  // Slideshow vars
-  let slideIdx = 0, timer = null;
-  let videoElement = null, imageElement = null;
-
   function clearMedia() {
     if(videoElement) { videoElement.remove(); videoElement = null; }
     if(imageElement) { imageElement.remove(); imageElement = null; }
@@ -247,7 +203,6 @@
   function showSlide(idx) {
     clearMedia();
     const slide = slides[idx];
-
     if(slide.type === "video" || slide.src.match(/\.(mp4|webm|ogg)$/i)) {
       videoElement = document.createElement('video');
       videoElement.src = slide.src;
@@ -263,42 +218,51 @@
       imageElement.className = 'slide-media';
       slideshow.appendChild(imageElement);
     }
-    // Set quote and counter
     slideQuote.innerHTML = slide.quote;
     slideProgress.innerText = `Slide ${idx+1} of ${slides.length}`;
+    backIcon.setAttribute("aria-disabled", idx === 0 ? "true" : "false");
   }
-
 
   function startSlideshow() {
     slideshow.classList.remove('hidden');
+    finalMsg.classList.add('hidden');
     slideIdx = 0;
     showSlide(slideIdx);
-    timer = setInterval(nextSlide, 4600); // 4.6s per slide
+    timer = setInterval(nextSlide, 4600);
   }
 
   function nextSlide() {
-    slideIdx++;
-    if(slideIdx >= slides.length) {
-      endSlideshow();
-    } else {
+    if (slideIdx < slides.length - 1) {
+      slideIdx++;
       showSlide(slideIdx);
+    } else {
+      endSlideshow();
     }
   }
+
   function endSlideshow() {
     clearInterval(timer);
     slideshow.classList.add('hidden');
     finalMsg.classList.remove('hidden');
   }
 
-  // (Optional: allow tap/click to skip ahead on mobile)
-  slideshow.addEventListener('click', function () {
-    if (timer) {
-      clearInterval(timer);
-      nextSlide();
-      if(slideIdx < slides.length) timer = setInterval(nextSlide, 4600);
+  // Back arrow click (icon at top left)
+  backIcon.addEventListener('click', function (e) {
+    if (slideIdx > 0) {
+      slideIdx--;
+      showSlide(slideIdx);
+      clearInterval(timer); // reset slideshow timer
+      timer = setInterval(nextSlide, 4600);
     }
   });
 
+  // (Optional) Tap/click anywhere else to advance slideshow
+  slideshow.addEventListener('click', function (evt) {
+    if (evt.target === backIcon) return;
+    nextSlide();
+    clearInterval(timer);
+    timer = setInterval(nextSlide, 4600);
+  });
 </script>
 </body>
 </html>
