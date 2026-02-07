@@ -1,30 +1,19 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-							<style>
-								body {
-									background-color: white; /* Ensure the iframe has a white background */
-								}
-
-								
-							</style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Hi Sejal! Will You Be My Valentine?</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    html, body { height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box; }
+    html, body {
+      height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box;
+    }
     body {
-      min-height: 100vh; width: 100vw; position: relative;
+      min-height: 100vh; width: 100vw;
+      position: relative;
       font-family: 'Segoe UI', cursive, sans-serif;
-      overflow: hidden; background: #ec407a;
+      overflow: hidden;
+      background: #ec407a;
     }
     #main-content {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -49,17 +38,9 @@
     }
     .no-option-msg {
       position: absolute;
-      font-size: 1em;
-      color: #9a1355;
-      opacity: 0.78;
-      font-style: italic;
-      letter-spacing: 0.08em;
-      pointer-events: none;
-      z-index: 9;
-      user-select: none;
-      max-width: 210px;
-      background: none;
-      padding: 5px 7px;
+      font-size: 1em; color: #9a1355; opacity: 0.78; font-style: italic;
+      letter-spacing: 0.08em; pointer-events: none; z-index: 9; user-select: none;
+      max-width: 210px; background: none; padding: 5px 7px;
       transition: left 0.5s, right 0.5s, bottom 0.5s, top 0.5s, opacity 0.3s;
     }
     .btn {
@@ -80,8 +61,7 @@
     .slide-media, .slide-video {
       width: 100vw; height: 100vh; object-fit: cover;
       position: absolute; top: 0; left: 0; transition: opacity 0.4s;
-      user-select: none; pointer-events: none;
-      background: #000;
+      user-select: none; pointer-events: none; background: #000;
     }
     .slide-quote {
       position: absolute; left: 50%; top: 50%; z-index: 9;
@@ -131,9 +111,19 @@
     #final-msg {
       position: absolute; z-index: 20; left: 0; top: 0; width: 100vw; height: 100vh;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
-      background: rgba(255,255,255,0.92); transition: opacity 1s; text-align: center;
+      transition: opacity 1s; text-align: center;
       font-size: 2.1em; color: #c11452; font-weight: bold; animation: pop 1.3s infinite alternate;
       letter-spacing: 1.2px; text-shadow: 1px 2px 8px #e91e63;
+      /* Add Valentines background below: */
+      background: url('https://i.imgur.com/u9AEnqs.jpeg') center center/cover no-repeat, rgba(255,255,255,0.92);
+      /* Replace ^^ with your own link if desired */
+    }
+    #final-valentine-text {
+      z-index: 3;
+      background: rgba(255,255,255,0.75);
+      padding: 30px 44px;
+      border-radius: 28px;
+      box-shadow: 0 4px 28px #c1145230;
     }
     @keyframes pop {
       0% { transform: scale(1); }
@@ -146,12 +136,13 @@
       #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
       #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
       .no-option-msg { left: 8px; bottom: 5px; font-size: 0.85em;}
+      #final-valentine-text {padding: 14px 9vw;font-size:1.1em;}
     }
   </style>
 </head>
 <body>
   <div id="main-content">
-    <div class="greeting">Hi Sejal!</div>
+    <div class="greeting" id="greeting">Hi Sejal!</div>
     <div class="main-question" id="mainQuestion">Will you be my Valentine?</div>
     <button class="btn" id="yesBtn">Yes</button>
     <button class="btn" id="noBtn">No</button>
@@ -163,9 +154,11 @@
     <div id="slide-quote" class="slide-quote"></div>
     <span id="slide-progress"></span>
   </div>
-  <!-- Final loving message -->
+  <!-- Final loving message / Valentines Day -->
   <div id="final-msg" class="hidden">
-    Happy Valentine's Day, My Love!<br>💖🥰💖
+    <div id="final-valentine-text">
+      Happy Valentine's Day, My Love!<br>💖🥰💖
+    </div>
   </div>
 <script>
   const slides = [
@@ -176,6 +169,19 @@
     {
       src: "https://i.imgur.com/Ie2DHb6.jpg",
       quote: "You make my heart smile every single day."
+    },
+    {
+      src: "https://i.imgur.com/m8YOHsp.jpeg",
+      quote: "I wish I could hold your hand right now. I miss you 💖"
+    },
+	  {
+      src: "https://i.imgur.com/7VCvqYF.jpeg",
+      quote: " Can’t wait to see you again — every second away feels too long."
+    },
+	 
+    {
+      src: "YOUR_IMAGE_2.jpg",
+      quote: "When I see you, I see my whole world light up. ✨"
     },
     {
       src: "https://i.imgur.com/is5ELje.jpg",
@@ -192,6 +198,7 @@
   const mainQuestion = document.getElementById('mainQuestion');
   const mainContent = document.getElementById('main-content');
   const noMsg = document.getElementById('noMsg');
+  const greeting = document.getElementById('greeting');
   const slideshow = document.getElementById('slideshow');
   const slideQuote = document.getElementById('slide-quote');
   const slideProgress = document.getElementById('slide-progress');
@@ -257,6 +264,7 @@
     }
   });
   yesBtn.addEventListener('click', function(){
+    greeting.style.display = "none"; // hide "Hi Sejal!" after first screen
     mainContent.classList.add('hidden');
     startSlideshow();
   });
@@ -323,10 +331,3 @@
 </script>
 </body>
 </html>
-
-							<script>
-                            	
-							</script>
-                        </body>
-                        </html>
-                    
