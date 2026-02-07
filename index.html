@@ -1,4 +1,273 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hi Sejal! Will You Be My Valentine?</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; width: 100vw; box-sizing: border-box; }
+    body {
+      min-height: 100vh; width: 100vw; position: relative;
+      font-family: 'Segoe UI', cursive, sans-serif;
+      overflow: hidden; background: #ec407a;
+    }
+    .confetti {
+      pointer-events: none; user-select: none;
+      position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+      z-index: 98; overflow: visible;
+    }
+    #main-content {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      background: linear-gradient(135deg,#ffd1e8 0,#fff6fa 100%);
+      z-index: 1;
+    }
+    .greeting {
+      font-size: 1.6em; color: #d81b60; font-weight: bold; margin-bottom: 16px;
+      text-shadow: 0 2px 10px #fff7; letter-spacing: 1.4px; text-align: center;
+    }
+    .main-question {
+      font-size: 2.2em; margin-bottom: 40px; color: #c2185b; font-weight: bold;
+      letter-spacing: 1.2px; text-shadow: 1px 1px 8px #fff8;
+    }
+    .no-option-msg {
+      position: absolute; font-size: 1em; color: #9a1355; opacity: 0.78;
+      font-style: italic; letter-spacing: 0.08em; pointer-events: none;
+      z-index: 9; user-select: none; max-width: 210px; background: none;
+      padding: 5px 7px; transition: left 0.5s, right 0.5s, bottom 0.5s,
+      top 0.5s, opacity 0.3s;
+    }
+    .btn {
+      font-size: 1.38em; padding: 16px 36px; margin: 20px 16px;
+      border: none; border-radius: 30px; cursor: pointer;
+      background: #ff4081; color: #fff; font-weight: bold;
+      box-shadow: 0 4px 12px #f0629222; transition: all 0.2s;
+    }
+    #noBtn { background: #fff; color: #ff4081; border: 2px solid #ff4081; position: relative; }
+    .hidden { display: none !important; }
+    #slideshow {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 2; overflow: hidden;
+    }
+    .slide-media, .slide-video {
+      width: 100vw; height: 100vh; object-fit: cover;
+      position: absolute; top: 0; left: 0; transition: opacity 0.4s;
+      user-select: none; pointer-events: none; background: #000;
+    }
+    /* Slide and final quote at lower center */
+    .slide-quote, #final-valentine-text {
+      position: absolute; left: 50%; top: 67%; z-index: 9;
+      transform: translate(-50%,-50%);
+      min-width: 240px; max-width: 70vw;
+      background: rgba(255,255,255,0.76); padding: 28px 22px;
+      border-radius: 26px; font-size: 1.37em; color: #e91e63;
+      box-shadow: 0 8px 38px 0 #c2185b33; font-weight: 500;
+      text-align: center; line-height: 1.35; text-shadow: 0 2px 8px #fff;
+      backdrop-filter: blur(1.5px); border: 1px solid #eab9c4;
+    }
+    #slide-progress {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      color: #fff; font-size: 1.1em; letter-spacing: 1px; padding: 6px 16px;
+      background: rgba(233,30,99,0.24); border-radius: 16px; user-select: none;
+      font-weight: 500; text-shadow: 0 1px 2px #e91e63; pointer-events: none;
+    }
+    #backIcon {
+      position: absolute; top: 28px; left: 28px; z-index: 20; font-size: 2.2em;
+      font-weight: bold; color: #fff; background: rgba(233,30,99,0.33);
+      border-radius: 50%; width: 45px; height: 45px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 2px 12px #e91e63aa;
+      transition: background 0.14s, color 0.14s; user-select: none;
+    }
+    #backIcon[aria-disabled="true"] { opacity: 0.2; pointer-events: none; }
+    #final-msg {
+      position: absolute; z-index: 20; left: 0; top: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: opacity 1s; text-align: center;
+      font-size: 2.1em; color: #c11452; font-weight: bold; animation: pop 1.3s infinite alternate;
+      letter-spacing: 1.2px; text-shadow: 1px 2px 8px #e91e63;
+      background: url('https://i.imgur.com/u9AEnqs.jpeg') center center/cover no-repeat, rgba(255,255,255,0.92);
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.05);}
+    }
+    @media (max-width: 670px) {
+      .greeting { font-size: 1.1em; }
+      .slide-quote, #final-valentine-text { font-size: 1em; max-width: 90vw; top: 72%; }
+      .main-question { font-size: 1.3em; }
+      #slideshow, #final-msg, .slide-media, .slide-video { max-width: 100vw; max-height: 100vh;}
+      #backIcon { top: 12px; left: 7px; font-size: 1.5em; width: 37px; height: 37px; }
+      .no-option-msg { left: 8px; bottom: 5px; font-size: 0.85em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti" id="confetti"></div>
+  <div id="main-content">
+    <div class="greeting" id="greeting">Hi Sejal!</div>
+    <div class="main-question" id="mainQuestion">Will you be my Valentine?</div>
+    <button class="btn" id="yesBtn">Yes</button>
+    <button class="btn" id="noBtn">No</button>
+    <div class="no-option-msg" id="noMsg">No isn't an option, you can try. 😉</div>
+  </div>
+  <div id="slideshow" class="hidden">
+    <div id="backIcon" title="Back" aria-disabled="true">&lt;</div>
+    <div id="slide-quote" class="slide-quote"></div>
+    <span id="slide-progress"></span>
+  </div>
+  <div id="final-msg" class="hidden">
+    <div id="final-valentine-text">
+      Happy Valentine's Day, My Love!<br>💖🥰🌹
+    </div>
+  </div>
+  <!-- Add Vocaroo audio -->
+  <audio id="bgmusic" src="https://media.vocaroo.com/mp3/1lQsj9pHMXIj" loop></audio>
+<script>
+  // Confetti
+  const confetti = document.getElementById('confetti');
+  const emojis = ['💖','🌹','❤️','💘','💗','💞','💕','💝'];
+  function spawnConfetto(){
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const el = document.createElement('span');
+    el.innerText = emoji;
+    el.style.position = 'absolute';
+    el.style.fontSize = (Math.random()*22+28) + 'px';
+    el.style.left = (Math.random()*98)+'vw';
+    el.style.top = '102vh';
+    el.style.opacity = Math.random()*0.7 + 0.3;
+    el.style.transition = 'transform 3.8s linear, opacity 3.8s linear';
+    confetti.appendChild(el);
+    setTimeout(()=>{
+      el.style.transform = `translateY(-105vh) rotate(${Math.random()*360-180}deg)`;
+      el.style.opacity = 0.1;
+    }, 30);
+    setTimeout(()=>{el.remove()}, 4100);
+  }
+  setInterval(spawnConfetto, 320);
+
+  // Your slides
+  const slides = [
+    {
+      src: "https://i.imgur.com/wDNR0cl.jpg",
+      quote: "You are my every Valentine, every day ♥"
+    },
+    {
+      src: "https://i.imgur.com/Ie2DHb6.jpg",
+      quote: "You make my heart smile every single day."
+    },
+    {
+      src: "https://i.imgur.com/m8YOHsp.jpeg",
+      quote: "I wish I could hold your hand right now. I miss you 💖"
+    },
+    {
+      src: "https://i.imgur.com/ddBaTN6.jpeg",
+      quote: "When I see you, I see my whole world light up. ✨"
+    },
+    {
+      src: "https://i.imgur.com/is5ELje.jpg",
+      quote: "Forever grateful for us. 🌸"
+    },
+    {
+      src: "https://i.imgur.com/lo3ATR5.jpg",
+      quote: "I'll love you through every song, every sunset, every tomorrow."
+    }
+  ];
+  let noClicks = 0;
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const mainQuestion = document.getElementById('mainQuestion');
+  const mainContent = document.getElementById('main-content');
+  const noMsg = document.getElementById('noMsg');
+  const greeting = document.getElementById('greeting');
+  const slideshow = document.getElementById('slideshow');
+  const slideQuote = document.getElementById('slide-quote');
+  const slideProgress = document.getElementById('slide-progress');
+  const finalMsg = document.getElementById('final-msg');
+  const backIcon = document.getElementById('backIcon');
+  const bgmusic = document.getElementById('bgmusic');
+  let slideIdx = 0;
+  let timer = null;
+  let videoElement = null, imageElement = null;
+  const msgSequence = [
+    {text: "No isn't an option, you can try. 😉", pos: "bl"},
+    {text: "I said no isn't an option! 😏", pos: "br"},
+    {text: "Stop clicking no!", pos: "tr"},
+    {text: "You really won't give up? 😂", pos: "tl"}
+  ];
+  const otherMsgs = [
+    "Please?? 🥺",
+    "You're not getting away! 😝",
+    "You're too cute to say no!",
+    "Still no? 😅",
+    "Say yes! 😘",
+    "Pretty pleeeease 💖",
+    "No escaping! 😁"
+  ];
+  function setNoMsgPos(posTag) {
+    noMsg.style.left = ""; noMsg.style.right = "";
+    noMsg.style.top = ""; noMsg.style.bottom = "";
+    switch(posTag) {
+      case "bl": noMsg.style.bottom = "20px"; noMsg.style.left = "18px"; break;
+      case "br": noMsg.style.bottom = "20px"; noMsg.style.right = "18px"; break;
+      case "tr": noMsg.style.top = "20px"; noMsg.style.right = "18px"; break;
+      case "tl": noMsg.style.top = "20px"; noMsg.style.left = "18px"; break;
+    }
+  }
+  setNoMsgPos(msgSequence[0].pos);
+
+  noBtn.addEventListener('click', function(e) {
+    noClicks++;
+    if(noClicks <= msgSequence.length-1) {
+      noMsg.innerText = msgSequence[noClicks].text;
+      setNoMsgPos(msgSequence[noClicks].pos);
+    } else {
+      let corners = ["bl","br","tr","tl"];
+      let rmsg = otherMsgs[Math.floor(Math.random()*otherMsgs.length)];
+      let rc = corners[Math.floor(Math.random()*corners.length)];
+      noMsg.innerText = rmsg;
+      setNoMsgPos(rc);
+    }
+    let yesScale = 1.4 + Math.min(0.4 + noClicks*0.22, 2);
+    yesBtn.style.fontSize = yesScale+"em";
+    if(noClicks===1){
+      mainQuestion.innerText = "Are you sure? 😅";
+      noBtn.innerText = "No 😓";
+    } else if (noClicks===2) {
+      mainQuestion.innerText = "Please, be my Valentine!";
+      noBtn.innerText = "No 😭";
+    } else if (noClicks===3) {
+      mainQuestion.innerText = "I will always love you 💖";
+      noBtn.innerText = "No 😢";
+    }
+    if(noClicks>=4) {
+      noBtn.style.position = "absolute";
+      noBtn.style.left = Math.random() * 60 + "%";
+      noBtn.style.top = Math.random() * 60 + "%";
+    }
+  });
+
+  yesBtn.addEventListener('click', function(){
+    greeting.style.display = "none";
+    mainContent.classList.add('hidden');
+    startSlideshow();
+  });
+
+  function clearMedia() {
+    if(videoElement) { videoElement.remove(); videoElement = null; }
+    if(imageElement) { imageElement.remove(); imageElement = null; }
+  }
+  function showSlide(idx) {
+    clearMedia();
+    const slide = slides[idx];
+    if(slide.type === "video" || (slide.src && slide.src.match(/\.(mp4|webm|ogg)$/i))) {
+      videoElement = document.createElement('video');
+      videoElement.src = slide.src;
+      videoElement.className = 'slide-video';
+      videoElement.autoplay = true;
+      videoElement.muted = true;
+      videoElement.loop = true;
       videoElement.playsInline = true;
       slideshow.appendChild(videoElement);
     } else {
@@ -46,27 +315,15 @@
     timer = setInterval(nextSlide, 4600);
   });
 
-  // ---------- Simple Confetti Hearts & Roses ----------
-  const confetti = document.getElementById('confetti');
-  const emojis = ['💖','🌹','❤️','💘','💗','💞','💕','💝'];
-  function spawnConfetto(){
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-    const el = document.createElement('span');
-    el.innerText = emoji;
-    el.style.position = 'absolute';
-    el.style.fontSize = (Math.random()*22+28) + 'px';
-    el.style.left = (Math.random()*98)+'vw';
-    el.style.top = '102vh';
-    el.style.opacity = Math.random()*0.7 + 0.3;
-    el.style.transition = 'transform 3.8s linear, opacity 3.8s linear';
-    confetti.appendChild(el);
-    setTimeout(()=>{
-      el.style.transform = `translateY(-105vh) rotate(${Math.random()*360-180}deg)`;
-      el.style.opacity = 0.1;
-    }, 30);
-    setTimeout(()=>{el.remove()}, 4100);
-  }
-  setInterval(spawnConfetto, 320);
+  // Play audio after 1 second from page load
+  setTimeout(function() {
+    const bgmusic = document.getElementById("bgmusic");
+    // Safari/iOS may require user interact, but try to play
+    if(bgmusic && bgmusic.paused) {
+      bgmusic.volume = 0.6;
+      bgmusic.play().catch(()=>{});
+    }
+  }, 1000);
 </script>
 </body>
 </html>
